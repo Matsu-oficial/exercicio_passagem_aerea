@@ -4,6 +4,8 @@ import br.fiap.assento.Assento;
 import br.fiap.cliente.Cliente;
 import br.fiap.desconto.Desconto;
 
+import java.text.DecimalFormat;
+
 public class Reserva {
     private Cliente cliente;
     private double valorOriginal;
@@ -27,12 +29,18 @@ public class Reserva {
         }
     }
 
-//    @Override
-//    public String toString() {
-//        String aux = super.toString();
-//        aux += "Cliente: " + cliente + "\n";
-//        aux += "Assento: " + assento + "\n";
-//        aux += "Valor da passagem: R$" + valorFinal + "\n";
-//        return aux;
-//    }
+    @Override
+    public String toString() {
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+        String aux = "";
+        aux += "Cliente: " + cliente.getNome() + "\n";
+        aux += "Assento: " + assento.getNumero() + "\n";
+        aux += "Valor Original: R$" + df.format(valorOriginal) + "\n";
+        aux += "Valor Final: R$" + df.format(valorFinal) + "\n";
+        return aux;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
 }

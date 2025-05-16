@@ -1,10 +1,13 @@
 package br.fiap.controle;
 import br.fiap.assento.Assento;
 import br.fiap.cliente.Cliente;
+import br.fiap.cliente.PessoaFisica;
+import br.fiap.cliente.PessoaJuridica;
 import br.fiap.reserva.Reserva;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.Double.parseDouble;
@@ -17,7 +20,16 @@ public class Controle {
     private static List<Reserva> listaReserva = new ArrayList<>();
 
     static {
+        // Lista de clientes
+        listaCliente.add(new PessoaFisica("Ana Maria", "111", "123"));
+        listaCliente.add(new PessoaJuridica("XPTO", "222", "123/1000"));
+        listaCliente.add(new PessoaFisica("Roberto Carlos", "333", "456"));
+        listaCliente.add(new PessoaJuridica("Xuxa LTDA", "666", "789/1000"));
 
+        // Lista de assentos
+        for (int i = 1; i <= 10; i++) {
+            listaAssento.add(new Assento(i));
+        }
     }
 
     public void menu() {
@@ -26,11 +38,70 @@ public class Controle {
         while(true) {
             try {
                 opcao = parseInt(showInputDialog(gerarMenu()));
+                switch (opcao) {
+                    case 1:
+                        reservar();
+                        break;
+                    case 2:
+                        pesquisar();
+                        break;
+                    case 3:
+                        cancelar();
+                        break;
+                    case 4:
+                        return;
+                    default:
+                        showMessageDialog(null, "Opção inválida.");
+                }
             }
             catch (NumberFormatException e) {
                 showMessageDialog(null, "Você deve digitar um número.");
             }
         }
+    }
+
+    private void cancelar() {
+    }
+
+    private void pesquisar() {
+        String aux = showInputDialog("Informe o CPF/CNPJ para reserva:");
+
+        for (Reserva reserva : listaReserva){
+            if (reserva.getCliente().getIdentificador().equals(aux)){
+                showMessageDialog(null, reserva);
+                return;
+            }
+        }
+        showMessageDialog(null, "CPF/CNPJ: " + aux + " não localizado.");
+    }
+
+    private void reservar() {
+        Random random = new Random();
+        int numAssento;
+        double valorOriginal;
+        Assento assento;
+
+        String aux = showInputDialog("Informe o CPF/CNPJ para reserva:");
+        for (Cliente cliente : listaCliente) {
+            if (cliente.getIdentificador().equals(aux)){
+                numAssento = parseInt(showInputDialog(listarAssento()));
+                valorOriginal = random.nextDouble(100, 1000);
+                assento = listaAssento.get(numAssento);
+                listaReserva.add(new Reserva(cliente, valorOriginal, assento));
+                assento.setDisponivel(false);
+                return;
+            }
+        }
+        showMessageDialog(null, "CPF/CNPJ: " + aux + " não localizado.");
+    }
+
+    private String listarAssento() {
+        String aux = "";
+        for (Assento assento : listaAssento) {
+            aux += assento;
+            aux += "---------------\n";
+        }
+        return aux;
     }
 
     private String gerarMenu() {
